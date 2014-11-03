@@ -1,0 +1,5 @@
+weather.configure:
+  title: 'Weather'
+  description: 'Configure the weather service.'
+  route_name: weather.configure
+  parent: system.admin_config_services

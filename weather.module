@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function weather_theme() {
+  return array(
+    'weather' => array(
+      'template' => 'weather',
+      'variables' => array('data' => NULL),
+    ),
+  );
+}

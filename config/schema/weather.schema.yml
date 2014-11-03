@@ -1,0 +1,8 @@
+# Schema for the configuration files of the Weather module.
+weather.config:
+  type: mapping
+  label: 'Weather configuration'
+  mapping:
+    city:
+      type: string
+      label: 'The city to get weather information'
