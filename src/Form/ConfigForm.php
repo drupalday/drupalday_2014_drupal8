@@ -77,6 +77,7 @@ class ConfigForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('City'),
       '#description' => $this->t('Insert the city to get weather information.'),
+      '#required' => TRUE,
       '#default_value' => $config->get('city'),
     );
 

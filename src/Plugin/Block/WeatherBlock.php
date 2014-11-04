@@ -5,6 +5,8 @@ namespace Drupal\weather\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\State\StateInterface;
+use Drupal\weather\WeatherService;
 use Drupal\weather\WeatherServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -30,6 +32,11 @@ class WeatherBlock extends BlockBase implements ContainerFactoryPluginInterface 
   private $configFactory;
 
   /**
+   * @var \Drupal\Core\State\StateInterface
+   */
+  private $state;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -38,7 +45,8 @@ class WeatherBlock extends BlockBase implements ContainerFactoryPluginInterface 
       $plugin_id,
       $plugin_definition,
       $container->get('weatherService'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('state')
     );
   }
 
@@ -48,11 +56,13 @@ class WeatherBlock extends BlockBase implements ContainerFactoryPluginInterface 
    * @param mixed $plugin_definition
    * @param \Drupal\weather\WeatherServiceInterface $weatherService
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   * @param \Drupal\Core\State\StateInterface $state
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, WeatherServiceInterface $weatherService, ConfigFactoryInterface $configFactory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, WeatherServiceInterface $weatherService, ConfigFactoryInterface $configFactory, StateInterface $state) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->weatherService = $weatherService;
     $this->configFactory = $configFactory;
+    $this->state = $state;
   }
 
   /**
@@ -62,9 +72,12 @@ class WeatherBlock extends BlockBase implements ContainerFactoryPluginInterface 
     $city = $this->configFactory->get('weather.config')->get('city');
     $weather = $this->weatherService->getWeather($city);
 
+    $timestamp = $this->state->get(WeatherService::LAST_RETRIEVED_TIMESTAMP);
+
     return array(
       '#theme' => 'weather',
       '#data' => $weather,
+      '#timestamp' => $timestamp,
     );
   }
 }

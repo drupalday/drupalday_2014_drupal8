@@ -7,7 +7,7 @@ function weather_theme() {
   return array(
     'weather' => array(
       'template' => 'weather',
-      'variables' => array('data' => NULL),
+      'variables' => array('data' => NULL, 'timestamp' => NULL),
     ),
   );
 }

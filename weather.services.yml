@@ -2,4 +2,4 @@ services:
 
   weatherService:
     class: Drupal\weather\WeatherService
-    arguments: ['@http_client']
+    arguments: ['@http_client', '@state', '@cache.default']
