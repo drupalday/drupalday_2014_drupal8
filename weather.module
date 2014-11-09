@@ -11,3 +11,10 @@ function weather_theme() {
     ),
   );
 }
+
+/**
+ *  Implements hook_preprocess().
+ */
+function weather_preprocess_weather(&$variables, $hook) {
+  echo 'preprocess';
+}

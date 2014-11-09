@@ -30,6 +30,9 @@ class WeatherController extends ControllerBase {
 
   /**
    * {@inheritdoc}
+   *
+   * Uses late static binding to create an instance of this class with
+   * injected dependencies.
    */
   public static function create(ContainerInterface $container) {
     return new static(

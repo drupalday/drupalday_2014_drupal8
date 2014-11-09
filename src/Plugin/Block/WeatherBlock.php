@@ -38,6 +38,9 @@ class WeatherBlock extends BlockBase implements ContainerFactoryPluginInterface 
 
   /**
    * {@inheritdoc}
+   *
+   * Uses late static binding to create an instance of this class with
+   * injected dependencies.
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
@@ -69,15 +72,25 @@ class WeatherBlock extends BlockBase implements ContainerFactoryPluginInterface 
    * {@inheritdoc}
    */
   public function build() {
+    // Retrieves the configured city with the Configuration management API
     $city = $this->configFactory->get('weather.config')->get('city');
+
+    // Retrieves the weather from the weather service
     $weather = $this->weatherService->getWeather($city);
 
+
+    // Retrieves the last retrieved timestamp from the State API
     $timestamp = $this->state->get(WeatherService::LAST_RETRIEVED_TIMESTAMP);
 
+    // builds and returns a cacheable render array
     return array(
-      '#theme' => 'weather',
+      '#theme' => 'weather', // theme function
       '#data' => $weather,
       '#timestamp' => $timestamp,
+      '#cache' => array(
+        'keys' => array("weather_html"), // cache keys
+        'tags' => array("city:$city"), // cache tags
+      ),
     );
   }
 }

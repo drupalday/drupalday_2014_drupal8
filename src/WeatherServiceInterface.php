@@ -8,9 +8,11 @@ namespace Drupal\weather;
 interface WeatherServiceInterface {
 
   /**
-   * @param $city
+   * Retrieves the weather for a specific city.
    *
-   * @return mixed
+   * @param string $city
+   *
+   * @return array
    */
   public function getWeather($city);
 

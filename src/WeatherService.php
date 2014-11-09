@@ -2,12 +2,15 @@
 
 namespace Drupal\weather;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Http\Client;
 use Drupal\Core\State\StateInterface;
 
 /**
  * Class WeatherService
+ *
+ * Uses the open Weather Map API to retrieve a city weather.
  */
 class WeatherService implements WeatherServiceInterface {
 
@@ -43,15 +46,18 @@ class WeatherService implements WeatherServiceInterface {
    * {@inheritdoc}
    */
   public function getWeather($city) {
-    if ($data = $this->cache->get('weather:' . $city)) {
+    if ($data = $this->cache->get("weather_data")) {
       return $data->data;
     }
     else {
+      // $this->client is an instance of Guzzle Client
       $response = $this->client->get('http://api.openweathermap.org/data/2.5/weather?q=' . $city . ',it&units=metric');
-
       $data = $response->json();
-      $this->cache->set('weather:' . $city, $data);
 
+      // puts data in cache with "city:$city" cache tag
+      $this->cache->set("weather_data", $data, Cache::PERMANENT, array("city:$city"));
+
+      // saves the last retrieved timestamp with the State API
       $this->state->set(WeatherService::LAST_RETRIEVED_TIMESTAMP, time());
 
       return $data;
